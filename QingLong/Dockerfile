@@ -98,7 +98,7 @@ RUN set -x && \
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version=4.96.4
 
 # Install ollama
-RUN curl -fsSL https://ollama.com/install.sh | sh
+# RUN curl -fsSL https://ollama.com/install.sh | sh
 
 
 ARG SOURCE_COMMIT

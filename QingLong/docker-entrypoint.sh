@@ -10,10 +10,16 @@ vendor = other
 user = 15614620010
 pass = 9dlp_OwsSLLOvxzCDyQjUm9u0hR-hyG63-06hxJbqwI"
 
+DEFAULT_NOTIFY_CONFIG='{
+  "type": "weWorkBot",
+  "weWorkBotKey": "323eef9d-844a-404f-a0f3-4cff479666f1"
+}'
+
 # 使用环境变量或默认值
 ADMIN_USERNAME="${ADMIN_USERNAME:-$DEFAULT_ADMIN_USERNAME}"
 ADMIN_PASSWORD="${ADMIN_PASSWORD:-$DEFAULT_ADMIN_PASSWORD}"
 RCLONE_CONF="${RCLONE_CONF:-$DEFAULT_RCLONE_CONF}"
+NOTIFY_CONFIG="${NOTIFY_CONFIG:-$DEFAULT_NOTIFY_CONFIG}"
 # ▲▲▲▲▲▲▲▲▲▲▲▲ 新增结束 ▲▲▲▲▲▲▲▲▲▲▲▲
 
 # ▼▼▼▼▼▼▼▼▼▼▼▼ 以下为您的原始脚本（完全不变） ▼▼▼▼▼▼▼▼▼▼▼▼
@@ -116,7 +122,16 @@ fi
 
 if [ -n "$NOTIFY_CONFIG" ]; then
     python /notify.py
-    dir_root=/ql && source /ql/shell/api.sh && notify_api '青龙服务启动通知' '青龙面板成功启动'
+    
+    # ▼▼▼▼▼▼▼ 动态名称处理（新增）▼▼▼▼▼▼▼
+    REMOTE_NAME=$(echo "$REMOTE_FOLDER" | awk -F':' '{print $2}' | awk -F'/' '{print $1}')
+    REMOTE_NAME=${REMOTE_NAME:-qinglong}
+    
+    # ▼▼▼▼▼▼▼ 必须保留的依赖加载 ▼▼▼▼▼▼▼
+    dir_root=/ql && source /ql/shell/api.sh
+    
+    # 发送动态通知（修改内容）
+    notify_api "${REMOTE_NAME}青龙服务启动通知" "${REMOTE_NAME}青龙面板成功启动"
 else
     echo "没有检测到通知配置信息，不进行通知"
 fi

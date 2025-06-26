@@ -81,6 +81,7 @@ if [ -n "$RCLONE_CONF" ]; then
   # 指定远程文件夹路径，格式为 remote:path
   #  REMOTE_FOLDER="huggingface:/qinglong"
   REMOTE_FOLDER="${RCLONE_REMOTE_PATH:-huggingface:/qinglong}"
+  echo "[DEBUG] 同步路径：$REMOTE_FOLDER"
 
   # 使用 rclone ls 命令列出文件夹内容，将输出和错误分别捕获
   OUTPUT=$(rclone ls "$REMOTE_FOLDER" 2>&1)
@@ -98,6 +99,7 @@ if [ -n "$RCLONE_CONF" ]; then
     else
       #echo "文件夹不为空"
       mkdir /ql/.tmp/data
+      echo "[DEBUG] 开始同步..."
       rclone sync $REMOTE_FOLDER /ql/.tmp/data && real_time=true ql reload data
     fi
   elif [[ "$OUTPUT" == *"directory not found"* ]]; then

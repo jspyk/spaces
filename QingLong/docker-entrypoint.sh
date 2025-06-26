@@ -121,20 +121,27 @@ else
 fi
 
 if [ -n "$NOTIFY_CONFIG" ]; then
-    python /notify.py
+    # 写入通知配置（关键修复）
+    echo "$NOTIFY_CONFIG" > /ql/data/config/notify.json
     
-    # 动态提取路径名称（兼容带/和不带/的情况）
-    REMOTE_NAME=$(echo "$REMOTE_FOLDER" | awk -F':' '{print $2}' | sed 's/^\///; s/\/.*$//')
-    REMOTE_NAME=${REMOTE_NAME:-qinglong}  # 默认值
-    
-    # 必须保留的依赖加载
+    # 提取路径名称（兼容各种格式）
+    REMOTE_NAME=$(echo "${RCLONE_REMOTE_PATH:-huggingface:/qinglong}" | 
+                 awk -F':' '{print $2}' | 
+                 sed 's:^/*::; s:/.*$::')
+    REMOTE_NAME=${REMOTE_NAME:-qinglong}
+
+    # 加载通知API
     dir_root=/ql && source /ql/shell/api.sh
     
-    # 发送动态通知（示例：qiangshi1青龙服务启动通知）
-    notify_api "${REMOTE_NAME}青龙服务启动通知" \
-               "节点名称: ${REMOTE_NAME}\n启动时间: $(date +'%Y-%m-%d %H:%M:%S')\n状态: ✅"
-else
-    echo "没有检测到通知配置信息，不进行通知"
+    # 发送通知（带错误重试）
+    for i in {1..3}; do
+        if notify_api "${REMOTE_NAME}服务启动" \
+                      "🟢 节点: ${REMOTE_NAME}\n⏰ 时间: $(date +'%m-%d %H:%M')\n${RCLONE_REMOTE_PATH}"; then
+            break
+        else
+            sleep 2
+        fi
+    done
 fi
 
 export PASSWORD=$ADMIN_PASSWORD

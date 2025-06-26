@@ -1,8 +1,8 @@
 #!/bin/bash
 
 dir_shell=/ql/shell
-。 $dir_shell/share.sh
-。 $dir_shell/env.sh
+. $dir_shell/share.sh
+. $dir_shell/env.sh
 
 echo -e "======================写入rclone配置========================\n"
 echo "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
@@ -79,6 +79,7 @@ init_auth_info "\"username\": \"$ADMIN_USERNAME\", \"password\": \"$ADMIN_PASSWO
 if [ -n "$RCLONE_CONF" ]; then
   echo -e "##########同步备份############"
   # 指定远程文件夹路径，格式为 remote:path
+  #  REMOTE_FOLDER="huggingface:/qinglong"
   REMOTE_FOLDER="${RCLONE_REMOTE_PATH:-huggingface:/qinglong}"
 
   # 使用 rclone ls 命令列出文件夹内容，将输出和错误分别捕获

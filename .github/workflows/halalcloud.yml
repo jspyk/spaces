@@ -1,4 +1,4 @@
-name: QINGLONG123
+name: Build halalcloud
 
 on:
   repository_dispatch:

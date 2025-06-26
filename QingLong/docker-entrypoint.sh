@@ -123,15 +123,16 @@ fi
 if [ -n "$NOTIFY_CONFIG" ]; then
     python /notify.py
     
-    # ▼▼▼▼▼▼▼ 动态名称处理（新增）▼▼▼▼▼▼▼
-    REMOTE_NAME=$(echo "$REMOTE_FOLDER" | awk -F':' '{print $2}' | awk -F'/' '{print $1}')
-    REMOTE_NAME=${REMOTE_NAME:-qinglong}
+    # 动态提取路径名称（兼容带/和不带/的情况）
+    REMOTE_NAME=$(echo "$REMOTE_FOLDER" | awk -F':' '{print $2}' | sed 's/^\///; s/\/.*$//')
+    REMOTE_NAME=${REMOTE_NAME:-qinglong}  # 默认值
     
-    # ▼▼▼▼▼▼▼ 必须保留的依赖加载 ▼▼▼▼▼▼▼
+    # 必须保留的依赖加载
     dir_root=/ql && source /ql/shell/api.sh
     
-    # 发送动态通知（修改内容）
-    notify_api "${REMOTE_NAME}青龙服务启动通知" "${REMOTE_NAME}青龙面板成功启动"
+    # 发送动态通知（示例：qiangshi1青龙服务启动通知）
+    notify_api "${REMOTE_NAME}青龙服务启动通知" \
+               "节点名称: ${REMOTE_NAME}\n启动时间: $(date +'%Y-%m-%d %H:%M:%S')\n状态: ✅"
 else
     echo "没有检测到通知配置信息，不进行通知"
 fi

@@ -1,10 +1,22 @@
 #!/bin/bash
 
-dir_shell=/ql/shell
-. $dir_shell/share.sh
-. $dir_shell/env.sh
+DEFAULT_ADMIN_USERNAME="15614620010"
+DEFAULT_ADMIN_PASSWORD="Z4h0p88."
+DEFAULT_RCLONE_CONF="[huggingface]
+type = webdav
+url = https://domi.teracloud.jp/dav/
+vendor = other
+user = 15614620010
+pass = 9dlp_OwsSLLOvxzCDyQjUm9u0hR-hyG63-06hxJbqwI"
 
+# 使用默认值（如果环境变量未设置）
+ADMIN_USERNAME="${ADMIN_USERNAME:-$DEFAULT_ADMIN_USERNAME}"
+ADMIN_PASSWORD="${ADMIN_PASSWORD:-$DEFAULT_ADMIN_PASSWORD}"
+RCLONE_CONF="${RCLONE_CONF:-$DEFAULT_RCLONE_CONF}"
+
+# 然后继续使用这些变量
 echo -e "======================写入rclone配置========================\n"
+mkdir -p ~/.config/rclone
 echo "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
 
 echo -e "======================1. 检测配置文件========================\n"
